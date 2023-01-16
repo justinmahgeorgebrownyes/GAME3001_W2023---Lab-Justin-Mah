@@ -86,11 +86,13 @@ void PlayScene::GetPlayerInput()
 		if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_A))
 		{
 			m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_RUN_LEFT);
+			m_pPlayer->GetTransform()->position -= glm::vec2(5.0f, 0.0f);
 			m_playerFacingRight = false;
 		}
 		else if (EventManager::Instance().IsKeyDown(SDL_SCANCODE_D))
 		{
 			m_pPlayer->SetAnimationState(PlayerAnimationState::PLAYER_RUN_RIGHT);
+			m_pPlayer->GetTransform()->position += glm::vec2(5.0f, 0.0f);
 			m_playerFacingRight = true;
 		}
 		else
@@ -190,6 +192,7 @@ void PlayScene::Start()
 
 	// Player Sprite
 	m_pPlayer = new Player();
+	m_pPlayer->GetTransform()->position = glm::vec2(50.0f, 50.0f);
 	AddChild(m_pPlayer);
 	m_playerFacingRight = true;
 
@@ -207,7 +210,7 @@ void PlayScene::GUI_Function()
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("Your Window Title Goes Here", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Your Window Title Goes Here", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 	ImGui::Text("Player Input");
 	ImGui::RadioButton("Keyboard / Mouse", &m_pCurrentInputType, static_cast<int>(InputType::KEYBOARD_MOUSE)); ImGui::SameLine();
@@ -216,19 +219,19 @@ void PlayScene::GUI_Function()
 
 	ImGui::Separator();
 
-	if(ImGui::Button("My Button"))
-	{
-		std::cout << "My Button Pressed" << std::endl;
-	}
+	//if(ImGui::Button("My Button"))
+	//{
+		//std::cout << "My Button Pressed" << std::endl;
+	//}
 
 	ImGui::Separator();
 
-	static float float3[3] = { 0.0f, 1.0f, 1.5f };
-	if(ImGui::SliderFloat3("My Slider", float3, 0.0f, 2.0f))
+	static float float2[2] = { m_pPlayer->GetTransform()->position.x, m_pPlayer->GetTransform()->position.y};
+	if(ImGui::SliderFloat2("Player position", float2, 0.0f, 2.0f))
 	{
-		std::cout << float3[0] << std::endl;
-		std::cout << float3[1] << std::endl;
-		std::cout << float3[2] << std::endl;
+		std::cout << float2[0] << std::endl;
+		std::cout << float2[1] << std::endl;
+		//std::cout << float2[2] << std::endl;
 		std::cout << "---------------------------\n";
 	}
 	

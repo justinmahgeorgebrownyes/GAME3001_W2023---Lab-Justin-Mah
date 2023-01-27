@@ -8,6 +8,11 @@
 #include "Button.h"
 #include "Label.h"
 
+#include "Target.h"
+#include "ship.h"
+#include "StarShip.h"
+
+
 class PlayScene : public Scene
 {
 public:
@@ -21,11 +26,16 @@ public:
 	virtual void HandleEvents() override;
 	virtual void Start() override;
 private:
+
+	StarShip* m_pStarShip;
+	Ship* m_pShip;
+
 	// IMGUI Function
 	void GUI_Function();
 	std::string m_guiTitle;
 	
 	glm::vec2 m_mousePosition;
+	Target* m_pTarget;
 
 	Plane* m_pPlaneSprite{};
 	Player* m_pPlayer{};
@@ -40,6 +50,11 @@ private:
 	int m_pCurrentInputType{};
 	void GetPlayerInput();
 	void GetKeyboardInput();
+
+
+	//debug variable
+
+	bool m_bDebugView;
 };
 
 #endif /* defined (__PLAY_SCENE__) */

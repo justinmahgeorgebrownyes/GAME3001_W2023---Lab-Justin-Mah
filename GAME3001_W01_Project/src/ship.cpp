@@ -126,5 +126,7 @@ void Ship::Reset()
 	const auto x_component = rand() % (640 - GetWidth()) + half_width + 1;
 	const auto y_component = -GetHeight();
 	GetTransform()->position = glm::vec2(x_component, y_component);
+	//GetRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
+
 }
 

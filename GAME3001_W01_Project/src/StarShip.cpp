@@ -45,15 +45,102 @@ void StarShip::Clean() {
 
 }
 
+float StarShip::GetMaxSpeed() const
+{
+	return 0.0f;
+}
+
+float StarShip::GetTurnRate() const
+{
+	return 0.0f;
+}
+
+float StarShip::GetAccelerationRate() const
+{
+	return 0.0f;
+}
+
+glm::vec2 StarShip::GetDesiredVelocity() const
+{
+	return glm::vec2();
+}
+
+void StarShip::SetMaxSpeed(float speed)
+{
+}
+
+void StarShip::SetTurnRate(float angle)
+{
+	m_turnRate = angle;
+
+}
+
+void StarShip::SetAccelerationRate(float rate)
+{
+	m_accelerationRate = rate;
+
+}
+
+void StarShip::SetDesiredVelocity(glm::vec2 target_position)
+{
+
+	SetTargetPosition(target_position);
+	m_desiredVelocity = Util::Normalize(target_position - GetTransform()->position) * GetMaxSpeed();
+	GetRigidBody()->velocity = m_desiredVelocity - GetRigidBody()->velocity;
+
+
+
+}
+
 void StarShip::Seek() {
 
+	SetDesiredVelocity(GetTargetPosition());
+
+	const glm::vec2 steering_direction = GetDesiredVelocity() - GetCurrentDirection();
+
+	LookWhereYoureGoing(steering_direction);
+
+	GetRigidBody()->acceleration = GetCurrentDirection() * GetAccelerationRate();
 }
 
 void StarShip::LookWhereYoureGoing(glm::vec2 target_direction) {
 
+	const float target_rotation = Util::SignedAngle(GetCurrentDirection(), target_direction);
+
+	const float turn_sensitivity = 5.0f;
+
+	if (abs(target_rotation) > turn_sensitivity) {
+
+		if (target_rotation > 0.0f) {
+
+			//turn right
+
+			SetCurrentHeading(GetCurrentHeading() + GetTurnRate());
+		}
+
+		else if(target_rotation < 0.0f) {
+
+
+			//turn left
+
+			SetCurrentHeading(GetCurrentHeading() - GetTurnRate());
+
+		}
+
+	}
+
+
+
+
+
+
 }
 
 void StarShip::m_move() {
+	
+	Seek();
+
+	
 	const float dt = Game::Instance().GetDeltaTime();
 
 	const glm::vec2 initial_position = GetTransform()->position;
@@ -69,6 +156,9 @@ void StarShip::m_move() {
 	GetRigidBody()->velocity += GetRigidBody()->acceleration;
 
 	GetRigidBody()->velocity = Util::Clamp(GetRigidBody()->velocity, GetMaxSpeed());
+	
+	
+	
 
 }
 
